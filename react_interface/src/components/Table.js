@@ -21,12 +21,6 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import moment from 'moment';
 
 
-let counter = 0;
-function createData(due_date, content, state) {
-    counter += 1;
-    return { id: counter, due_date, content, state };
-}
-
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
         return -1;
@@ -54,9 +48,7 @@ function getSorting(order, orderBy) {
 const rows = [
     { id: 'due_date', numeric: false, disablePadding: true, label: 'Due Date' },
     { id: 'content', numeric: false, disablePadding: false, label: 'Content' },
-    { id: 'state', numeric: true, disablePadding: false, label: 'State' },
-    // { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-    // { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
+    { id: 'state', numeric: true, disablePadding: false, label: 'State' }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -144,7 +136,6 @@ const toolbarStyles = theme => ({
 
 let EnhancedTableToolbar = props => {
     const { numSelected, classes } = props;
-
     return (
         <Toolbar
             className={classNames(classes.root, {
@@ -166,7 +157,7 @@ let EnhancedTableToolbar = props => {
             <div className={classes.actions}>
                 {numSelected > 0 ? (
                     <Tooltip title="Delete">
-                        <IconButton aria-label="Delete">
+                        <IconButton aria-label="Delete" onClick={props.deleteTodoItem}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -201,31 +192,13 @@ class EnhancedTable extends React.Component {
         order: 'desc',
         orderBy: 'due_date',
         selected: [],
-        data: [
-            createData('Cupcake', 305, 121),
-            createData('Donut', 452, 3211),
-            createData('Eclair', 262, 3121),
-            createData('Frozen yoghurt', 159, 312),
-            createData('Gingerbread', 356, 3121),
-            createData('Honeycomb', 408, 1),
-            createData('Ice cream sandwich', 237, 3211),
-            createData('Jelly Bean', 375, 1),
-            createData('KitKat', 518, 1),
-            createData('Lollipop', 392, 1),
-            createData('Marshmallow', 31, 1),
-            createData('Nougat', 360, 1),
-            createData('Oreo', 437, 1),
-        ],
-        date2: [],
         page: 0,
         rowsPerPage: 5,
     };
 
     handleRequestSort = (event, property) => {
         const orderBy = property;
-        console.log(property)
         let order = 'desc';
-
         if (this.state.orderBy === property && this.state.order === 'desc') {
             order = 'asc';
         }
@@ -235,7 +208,7 @@ class EnhancedTable extends React.Component {
 
     handleSelectAllClick = event => {
         if (event.target.checked) {
-            this.setState(state => ({ selected: state.data.map(n => n.id) }));
+            this.setState(state => ({ selected: this.props.todoItems.map(n => n.id) }));
             return;
         }
         this.setState({ selected: [] });
@@ -276,32 +249,34 @@ class EnhancedTable extends React.Component {
         var today = new Date();
         if (moment(entity.due_date).format('YYYY-MM-DD') < moment(today).format('YYYY-MM-DD') && entity.state !== 3) {
             return {
-                backgroundColor: 'rgb(255, 226, 236)',
-                color:'#F50057'
+                backgroundColor: '#FFE2EC',
+                color: '#F50057'
             }
         }
         else if (entity.state === 3) {
             return {
-                backgroundColor:'#E2F0D9',
-                color:'#4B7744'
+                backgroundColor: '#E2F0D9',
+                color: '#4B7744'
             }
         }
         else {
-            return {
-                backgroundColor:'#DCECF6',
-                color:'#457492'
-            }
+            return ''
         }
+    }
+
+    deleteTodoItem = () => {
+        console.log(this.state.selected);
+        this.state.selected.map(todo_id => this.props.deleteTodo(todo_id))
+        this.setState({ selected: [] });
     }
 
     render() {
         const { classes } = this.props;
-        const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-        const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
+        const { order, orderBy, selected, rowsPerPage, page } = this.state;
+        const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.props.todoItems.length - page * rowsPerPage);
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} deleteTodoItem={this.deleteTodoItem} />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead
@@ -310,7 +285,7 @@ class EnhancedTable extends React.Component {
                             orderBy={orderBy}
                             onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
-                            rowCount={data.length}
+                            rowCount={this.props.todoItems.length}
                         />
                         <TableBody>
                             {stableSort(this.props.todoItems, getSorting(order, orderBy))
@@ -335,7 +310,9 @@ class EnhancedTable extends React.Component {
                                                 {moment(n.due_date).format('YYYY-MM-DD')}
                                             </TableCell>
                                             <TableCell align="left" style={{ color: this.checkStatus(n).color }}>{n.content}</TableCell>
-                                            <TableCell align="right" style={{ color: this.checkStatus(n).color }}>{n.state}</TableCell>
+                                            <TableCell align="right" style={{ color: this.checkStatus(n).color }}>
+ 
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -350,7 +327,7 @@ class EnhancedTable extends React.Component {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={data.length}
+                    count={this.props.todoItems.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{

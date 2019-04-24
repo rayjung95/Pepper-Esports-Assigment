@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+//  Api Clients
 export const client = {
   django_api: {
     client: axios.create({
@@ -14,6 +15,3 @@ export const client = {
 export const HEADERS = {
   'Content-Type': 'application/json'
 }
-  // 'api-key': 'j05wd2ae49d212578ef13cb607cef64b',
-  // 'sessiontoken': '7GJZh/PzWvDabpAIqw5qnKY/dvjc/3Xe'
-  //'sessiontoken': 'Kw/xlaGwyV/6mmf6CF2oxo9Y4eqokxzO'

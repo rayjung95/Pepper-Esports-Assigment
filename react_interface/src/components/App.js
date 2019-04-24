@@ -1,18 +1,15 @@
 import React from 'react'
-import Footer from './Footer'
 import TodoForm from './TodoForm'
-import VisibleTodoList from '../containers/VisibleTodoList'
 import Table from './Table';
 
 import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getTodo } from "../actions/todo";
+import { getTodo, deleteTodo } from "../actions/todo";
 
 
 class App extends React.Component {
@@ -40,15 +37,15 @@ class App extends React.Component {
 
         <Grid item xs={12}>
           <Grid container justify="center" spacing={32}>
-            <Grid item xs={12}>
-              <Table todoItems={this.props.todoItems} />
+            <Grid item xs={11}>
+              <Table todoItems={this.props.todoItems}  deleteTodo={this.props.deleteTodo}/>
             </Grid>
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
           <Grid container justify="center" spacing={16}>
-            <Grid item xl={12}>
+            <Grid item xs='auto' style={{marginLeft:'20px'}}>
               <TodoForm />
             </Grid>
           </Grid>
@@ -74,7 +71,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
-    getTodo
+    getTodo,
+    deleteTodo
   }, dispatch)
 );
 export default connect(mapStateToProps, mapDispatchToProps)(App);

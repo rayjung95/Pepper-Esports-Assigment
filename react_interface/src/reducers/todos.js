@@ -22,7 +22,7 @@ export const todoReducer = (state = initialStates, action) => {
         loading: false
       };
     case SUCCESS(ActionType.GET_TODO):
-    console.log(action)
+    console.log(action.payload.data)
       return {
         ...state,
         todoItems: action.payload.data,

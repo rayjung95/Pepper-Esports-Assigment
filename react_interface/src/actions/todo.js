@@ -1,11 +1,9 @@
 import * as ActionType from './index';
 import { HEADERS } from '../constants/ApiServices';
 
-// let nextTodoId = 0
-
-
+// Add a todo item
 export const addTodo = todo => async dispatch => {
-    console.log(new Date(todo.due_date))
+    // console.log(new Date(todo.due_date))
     const result = await dispatch({
         type: ActionType.ADD_TODO,
         payload: {
@@ -26,6 +24,8 @@ export const addTodo = todo => async dispatch => {
 
 };
 
+
+// Get Todo items
 export const getTodo = () => {
     return {
         type: ActionType.GET_TODO,
@@ -38,28 +38,19 @@ export const getTodo = () => {
     };
 }
 
-
-
-
-
-// export const addTodo = text => ({
-//   type: 'ADD_TODO',
-//   id: nextTodoId++,
-//   text
-// })
-
-// export const setVisibilityFilter = filter => ({
-//     type: 'SET_VISIBILITY_FILTER',
-//     filter
-// })
-
-// export const toggleTodo = id => ({
-//     type: 'TOGGLE_TODO',
-//     id
-// })
-
-// export const VisibilityFilters = {
-//     SHOW_ALL: 'SHOW_ALL',
-//     SHOW_COMPLETED: 'SHOW_COMPLETED',
-//     SHOW_ACTIVE: 'SHOW_ACTIVE'
-// }
+// Delete Todo item
+export const  deleteTodo = id => async dispatch => {
+    const result = await dispatch ({
+        type: ActionType.DELETE_TODO,
+        payload: {
+            client: 'django_api',
+            request: {
+                method:'DELETE',
+                url:`${id}`,
+                headers: HEADERS
+            }
+        }
+    });
+    dispatch(getTodo());
+    return result
+}
