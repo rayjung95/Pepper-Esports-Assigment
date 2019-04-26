@@ -194,6 +194,11 @@ class EnhancedTable extends React.Component {
         selected: [],
         page: 0,
         rowsPerPage: 5,
+        state: {
+            1: 'Todo',
+            2: 'In-Progress',
+            3: 'Done'
+        }
     };
 
     handleRequestSort = (event, property) => {
@@ -311,7 +316,7 @@ class EnhancedTable extends React.Component {
                                             </TableCell>
                                             <TableCell align="left" style={{ color: this.checkStatus(n).color }}>{n.content}</TableCell>
                                             <TableCell align="right" style={{ color: this.checkStatus(n).color }}>
- 
+                                                {this.state.state[n.state]}
                                             </TableCell>
                                         </TableRow>
                                     );
