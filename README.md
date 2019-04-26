@@ -1,7 +1,7 @@
 # Pepper-Esports-Assigment
 This project is an assignment that requires **django backend api server** with **react.js frontend** to create Todo App
 
-## Scripts Structure
+## Code Structure
 
 ```
 my-app
@@ -9,7 +9,7 @@ my-app
 ├── django
 └── react_interface
 ```
-### Installing and Running Django API server  - Backend
+## Installing and Running Django API server - Backend
 
 **You’ll need to have Python 3.7.x and Django 2.x on your local development machine**
 
@@ -22,7 +22,7 @@ python3 manage.py runserver
 ```
 It will start django api server which allow **POST, DELETE, GET Methods** on **http://127.0.0.1:8000**
 
-### `python3 manage.py test`
+## python3 manage.py test
 
 
 ```sh
@@ -36,7 +36,7 @@ It will run the test which includes <br>
 - Test for **DELETE-API** a Todo Item
 
 
-### Installing and Running React.js App - Frontend
+## Installing and Running React.js App - Frontend
 
 ```sh
 cd react_interface
