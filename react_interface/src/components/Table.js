@@ -143,7 +143,7 @@ let EnhancedTableToolbar = props => {
         {
             value: 0,
             label: 'None',
-        }, 
+        },
         {
             value: 1,
             label: 'Todo',
@@ -183,20 +183,36 @@ let EnhancedTableToolbar = props => {
                         </IconButton>
                     </Tooltip>
                 ) :
-                    <TextField
-                        id="standard-select-currency"
-                        select
-                        label="Select"
-                        value={props.filter_state}
-                        onChange={props.handleChange('filter_state')}
-                        margin="normal"
-                    >
-                        {filter_state.map(option => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                    <>
+                        <TextField
+                            id="standard-select-state"
+                            select
+                            label="Filter by State"
+                            value={props.filter_state}
+                            onChange={props.handleChange('filter_state')}
+                            margin="normal"
+                            fullWidth
+                        >
+                            {filter_state.map(option => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <TextField
+                            id="datetime-local"
+                            label="Due Date"
+                            type="date"
+                            value={props.filter_due_date}
+                            onChange={props.handleChange('filter_due_date')}
+                            fullWidth
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+
+                            margin="normal"
+                        />
+                    </>
                 }
             </div>
         </Toolbar>
@@ -235,7 +251,8 @@ class EnhancedTable extends React.Component {
             2: 'In-Progress',
             3: 'Done'
         },
-        filter_state: 0
+        filter_state: 0,
+        filter_due_date:''
     };
 
     handleRequestSort = (event, property) => {
@@ -286,7 +303,7 @@ class EnhancedTable extends React.Component {
     };
 
     handleChange = name => event => {
-        this.setState({ [name]: event.target.value }, () => this.props.getTodo(`state=${this.state.filter_state}`));
+        this.setState({ [name]: event.target.value }, () => this.props.getTodo(`${this.state.filter_state === 0 ? '' : `state=${this.state.filter_state}` }${this.state.filter_due_date ? `&due_date=${this.state.filter_due_date}` : ''}`));
     };
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
@@ -323,7 +340,7 @@ class EnhancedTable extends React.Component {
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.props.todoItems.length - page * rowsPerPage);
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar handleChange={this.handleChange} filter_state={this.state.filter_state} numSelected={selected.length} deleteTodoItem={this.deleteTodoItem} />
+                <EnhancedTableToolbar handleChange={this.handleChange} filter_state={this.state.filter_state}  filter_due_date={this.state.filter_due_date} numSelected={selected.length} deleteTodoItem={this.deleteTodoItem} />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead

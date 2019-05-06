@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import moment from 'moment';
 
 class TodoForm extends React.Component {
   state = {
@@ -25,6 +26,7 @@ class TodoForm extends React.Component {
       content: this.state.content
     }
 
+    console.log(todo)
     if (todo.content) {
       this.props.addTodo(todo);
       this.refs.form.reset();

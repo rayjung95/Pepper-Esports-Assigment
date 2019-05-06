@@ -14,7 +14,7 @@ export const addTodo = todo => async dispatch => {
                 data: {
                     "state": todo.state,
                     "content": todo.content,
-                    "due_date": new Date(todo.due_date.replace(/-/g, '\/'))
+                    "due_date": todo.due_date
                 }
             }
         }
