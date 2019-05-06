@@ -26,12 +26,15 @@ export const addTodo = todo => async dispatch => {
 
 
 // Get Todo items
-export const getTodo = () => {
+export const getTodo = (sort) => {
+    const requestUrl = `${sort ? `?${sort}` : ''}`;
+    console.log(requestUrl)
     return {
         type: ActionType.GET_TODO,
         payload: {
             client: 'django_api',
             request: {
+                url: requestUrl,
                 headers: HEADERS
             }
         }
@@ -46,8 +49,27 @@ export const  deleteTodo = id => async dispatch => {
             client: 'django_api',
             request: {
                 method:'DELETE',
-                url:`${id}`,
+                url:`${id}/`,
                 headers: HEADERS
+            }
+        }
+    });
+    dispatch(getTodo());
+    return result
+}
+
+// Delete Bulk Todo items
+export const  deleteBulkTodos = array => async dispatch => {
+    const result = await dispatch ({
+        type: ActionType.DELETE_TODO,
+        payload: {
+            client: 'django_api',
+            request: {
+                method:'DELETE',
+                headers: HEADERS,
+                data:{
+                    "todoItems": array
+                }
             }
         }
     });

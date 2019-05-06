@@ -11,12 +11,16 @@ export const todoReducer = (state = initialStates, action) => {
   switch (action.type) {
     case REQUEST(ActionType.ADD_TODO):
     case REQUEST(ActionType.GET_TODO):
+    case REQUEST(ActionType.DELETE_TODO):
+    case REQUEST(ActionType.DELETE_BULK_TODOS):
       return {
         ...state,
         loading: true
       }
 
     case SUCCESS(ActionType.ADD_TODO):
+    case SUCCESS(ActionType.DELETE_TODO):
+    case SUCCESS(ActionType.DELETE_BULK_TODOS):
       return {
         ...state,
         loading: false
@@ -40,6 +44,13 @@ export const todoReducer = (state = initialStates, action) => {
         ...state,
         loading: false,
         error: 'Error while Fetching todo items from server'
+      }
+    case FAILURE(ActionType.DELETE_TODO):
+    case FAILURE(ActionType.DELETE_BULK_TODOS):
+      return {
+        ...state,
+        loading: false,
+        error: 'Error while deleting todo item/s from server'
       }
     default:
       return state

@@ -9,13 +9,13 @@ import Typography from '@material-ui/core/Typography';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getTodo, deleteTodo } from "../actions/todo";
+import { getTodo, deleteTodo, deleteBulkTodos } from "../actions/todo";
 
 
 class App extends React.Component {
 
   componentDidMount(){
-    this.props.getTodo();
+    this.props.getTodo('');
   }
   render() {
     return (
@@ -38,7 +38,7 @@ class App extends React.Component {
         <Grid item xs={12}>
           <Grid container justify="center" spacing={32}>
             <Grid item xs={11}>
-              <Table todoItems={this.props.todoItems}  deleteTodo={this.props.deleteTodo}/>
+              <Table todoItems={this.props.todoItems}  deleteTodo={this.props.deleteTodo} deleteBulkTodos={this.props.deleteBulkTodos} getTodo={this.props.getTodo}/>
             </Grid>
           </Grid>
         </Grid>
@@ -72,7 +72,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
     getTodo,
-    deleteTodo
+    deleteTodo,
+    deleteBulkTodos
   }, dispatch)
 );
 export default connect(mapStateToProps, mapDispatchToProps)(App);

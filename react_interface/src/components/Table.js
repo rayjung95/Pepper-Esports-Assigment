@@ -19,6 +19,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 // import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import moment from 'moment';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+
 
 
 function desc(a, b, orderBy) {
@@ -136,6 +139,24 @@ const toolbarStyles = theme => ({
 
 let EnhancedTableToolbar = props => {
     const { numSelected, classes } = props;
+    const filter_state = [
+        {
+            value: 0,
+            label: 'None',
+        }, 
+        {
+            value: 1,
+            label: 'Todo',
+        },
+        {
+            value: 2,
+            label: 'In-Progress',
+        },
+        {
+            value: 3,
+            label: 'Done',
+        }
+    ];
     return (
         <Toolbar
             className={classNames(classes.root, {
@@ -161,7 +182,22 @@ let EnhancedTableToolbar = props => {
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
-                ) : null}
+                ) :
+                    <TextField
+                        id="standard-select-currency"
+                        select
+                        label="Select"
+                        value={props.filter_state}
+                        onChange={props.handleChange('filter_state')}
+                        margin="normal"
+                    >
+                        {filter_state.map(option => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                }
             </div>
         </Toolbar>
     );
@@ -198,7 +234,8 @@ class EnhancedTable extends React.Component {
             1: 'Todo',
             2: 'In-Progress',
             3: 'Done'
-        }
+        },
+        filter_state: 0
     };
 
     handleRequestSort = (event, property) => {
@@ -248,6 +285,10 @@ class EnhancedTable extends React.Component {
         this.setState({ rowsPerPage: event.target.value });
     };
 
+    handleChange = name => event => {
+        this.setState({ [name]: event.target.value }, () => this.props.getTodo(`state=${this.state.filter_state}`));
+    };
+
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     checkStatus = entity => {
@@ -271,7 +312,8 @@ class EnhancedTable extends React.Component {
 
     deleteTodoItem = () => {
         console.log(this.state.selected);
-        this.state.selected.map(todo_id => this.props.deleteTodo(todo_id))
+        this.state.selected.length > 1 ? this.props.deleteBulkTodos(this.state.selected) : this.props.deleteTodo(this.state.selected[0])
+        // this.state.selected.map(todo_id => this.props.deleteTodo(todo_id))
         this.setState({ selected: [] });
     }
 
@@ -281,7 +323,7 @@ class EnhancedTable extends React.Component {
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.props.todoItems.length - page * rowsPerPage);
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} deleteTodoItem={this.deleteTodoItem} />
+                <EnhancedTableToolbar handleChange={this.handleChange} filter_state={this.state.filter_state} numSelected={selected.length} deleteTodoItem={this.deleteTodoItem} />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead
